@@ -1,0 +1,14 @@
+/Users/jaraazad/Documents/Omnium/OmniumCase/bin/Debug/net10.0/OmniumCase
+/Users/jaraazad/Documents/Omnium/OmniumCase/bin/Debug/net10.0/OmniumCase.deps.json
+/Users/jaraazad/Documents/Omnium/OmniumCase/bin/Debug/net10.0/OmniumCase.runtimeconfig.json
+/Users/jaraazad/Documents/Omnium/OmniumCase/bin/Debug/net10.0/OmniumCase.dll
+/Users/jaraazad/Documents/Omnium/OmniumCase/bin/Debug/net10.0/OmniumCase.pdb
+/Users/jaraazad/Documents/Omnium/OmniumCase/obj/Debug/net10.0/OmniumCase.GeneratedMSBuildEditorConfig.editorconfig
+/Users/jaraazad/Documents/Omnium/OmniumCase/obj/Debug/net10.0/OmniumCase.AssemblyInfoInputs.cache
+/Users/jaraazad/Documents/Omnium/OmniumCase/obj/Debug/net10.0/OmniumCase.AssemblyInfo.cs
+/Users/jaraazad/Documents/Omnium/OmniumCase/obj/Debug/net10.0/OmniumCase.csproj.CoreCompileInputs.cache
+/Users/jaraazad/Documents/Omnium/OmniumCase/obj/Debug/net10.0/OmniumCase.dll
+/Users/jaraazad/Documents/Omnium/OmniumCase/obj/Debug/net10.0/refint/OmniumCase.dll
+/Users/jaraazad/Documents/Omnium/OmniumCase/obj/Debug/net10.0/OmniumCase.pdb
+/Users/jaraazad/Documents/Omnium/OmniumCase/obj/Debug/net10.0/OmniumCase.genruntimeconfig.cache
+/Users/jaraazad/Documents/Omnium/OmniumCase/obj/Debug/net10.0/ref/OmniumCase.dll
