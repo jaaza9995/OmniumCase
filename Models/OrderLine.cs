@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
+namespace OmniumCase.Models;
+
 public class OrderLine
 {
     public int OrderLineId { get; set; }
