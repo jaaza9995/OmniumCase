@@ -1,8 +1,8 @@
 using OmniumCase.Models;
 
-namespace OmniumCase.Services;
+namespace OmniumCase.Service;
 
-public class OrderServices
+public class OrderService
 {
     public List<Order> GetOrders()
     {
@@ -99,5 +99,14 @@ public class OrderServices
         }
 
         order.Total = total;
+    }
+
+    public Order? GetOrder(int orderId)
+    {
+        List<Order> orders = GetOrders();
+
+        return orders.FirstOrDefault(
+            order => order.OrderId == orderId
+        );
     }
 }
