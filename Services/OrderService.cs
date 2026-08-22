@@ -1,112 +1,64 @@
+using System.Net.Http.Json;
 using OmniumCase.Models;
+using OmniumCase.DTOs;
 
 namespace OmniumCase.Service;
 
 public class OrderService
 {
-    public List<Order> GetOrders()
+    private readonly HttpClient _httpClient;
+
+    public OrderService(HttpClient httpClient)
     {
-        List<Order> orders = new List<Order>
-        {
-            new Order
-            {
-                OrderId = 1,
-                CustomerId = 100,
-                CustomerName = "Per Pettersen",
-                OrderLines = new List<OrderLine>
-                {
-                    new OrderLine
-                    {
-                        OrderLineId = 1,
-                        ProductId = 1000,
-                        ProductName = "Batteri - AA",
-                        Quantity = 2,
-                        Price = 199.80m
-                    },
-                    new OrderLine
-                    {
-                        OrderLineId = 2,
-                        ProductId = 1001,
-                        ProductName = "Fjernkontroll",
-                        Quantity = 1,
-                        Price = 149.90m
-                    }
-                }
-            },
-            new Order
-            {
-                OrderId = 2,
-                CustomerId = 101,
-                CustomerName = "Hanna Hansen",
-                OrderLines = new List<OrderLine>
-                {
-                    new OrderLine
-                    {
-                        OrderLineId = 3,
-                        ProductId = 1002,
-                        ProductName = "Arduino Startpakke",
-                        Quantity = 1,
-                        Price = 1299.00m
-                    },
-                    new OrderLine
-                    {
-                        OrderLineId = 4,
-                        ProductId = 1003,
-                        ProductName = "Røykvasler",
-                        Price = 499.99m
-                    },
-                    new OrderLine
-                    {
-                        OrderLineId = 5,
-                        ProductId = 1004,
-                        ProductName = "Apple AirPods 4",
-                        Quantity = 1,
-                        Price = 1490.00m
-                    }
-
-                }
-
-        },
-         new Order
-                {
-                    OrderId = 3,
-                    CustomerId = 102,
-                    CustomerName = "Ole Olsen",
-                    OrderLines = new List<OrderLine>
-                    {
-                        new OrderLine
-                        {
-                        OrderLineId = 6,
-                        ProductId = 1000,
-                        ProductName = "Batteri - AA",
-                        Quantity = 4,
-                        Price = 499.60m
-
-                        }
-                    }
-                }
-            };
-        return orders;
+        _httpClient = httpClient;
     }
 
-    public void CalculateOrderTotal(Order order)
+    public async Task<List<Order>> GetOrdersAsync()
     {
-        decimal total = 0;
+        CartResponse? cartResponse =
+            await _httpClient.GetFromJsonAsync<CartResponse>(
+                "https://dummyjson.com/carts?limit=3"
+            );
 
-        foreach (OrderLine orderLine in order.OrderLines)
+        UserResponse? userResponse =
+            await _httpClient.GetFromJsonAsync<UserResponse>(
+                "https://dummyjson.com/users?limit=0"
+            );
+
+        if (cartResponse == null || userResponse == null)
         {
-            total += orderLine.Quantity * orderLine.Price;
+            return new List<Order>();
         }
 
-        order.Total = total;
-    }
+        List<Order> orders = cartResponse.Carts.Select(cart =>
+        {
+            ApiUser? customer = userResponse.Users.FirstOrDefault(
+                user => user.Id == cart.UserId
+            );
 
-    public Order? GetOrder(int orderId)
-    {
-        List<Order> orders = GetOrders();
+            return new Order
+            {
+                OrderId = cart.Id,
+                CustomerId = cart.UserId,
+                CustomerName = customer == null
+                    ? "Unknown customer"
+                    : $"{customer.FirstName} {customer.LastName}",
 
-        return orders.FirstOrDefault(
-            order => order.OrderId == orderId
-        );
+                Total = cart.Total,
+
+                OrderLines = cart.Products.Select(product =>
+                    new OrderLine
+                    {
+                        OrderLineId = product.Id,
+                        ProductId = product.Id,
+                        ProductName = product.Title,
+                        Quantity = product.Quantity,
+                        Price = product.Price
+                    }
+                ).ToList()
+            };
+        }).ToList();
+
+        return orders;
     }
 }
