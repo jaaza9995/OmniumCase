@@ -4,11 +4,11 @@ namespace OmniumCase.Models;
 
 public class Order
 {
+    [Range(0, int.MaxValue)]
     public int OrderId { get; set; }
 
     [Range(1, int.MaxValue, ErrorMessage = "CustomerId must be greater than 0.")]
     public int CustomerId { get; set; }
-
 
     [Required(ErrorMessage = "Customer name must be provided.")]
     public string CustomerName { get; set; } = string.Empty;

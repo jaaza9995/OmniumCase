@@ -6,6 +6,7 @@ namespace OmniumCase.Service;
 
 public class OrderService
 {
+    //oppgave2
     private readonly HttpClient _httpClient;
 
     public OrderService(HttpClient httpClient)
@@ -15,20 +16,22 @@ public class OrderService
 
     public async Task<List<Order>> GetOrdersAsync()
     {
-        CartResponse? cartResponse =
+        CartResponse cartResponse =
             await _httpClient.GetFromJsonAsync<CartResponse>(
-                "https://dummyjson.com/carts?limit=3"
+                "https://dummyjson.com/carts?limit=5"
+            )
+            ?? throw new InvalidOperationException(
+                "Could not retrieve carts from the API."
             );
 
-        UserResponse? userResponse =
+        UserResponse userResponse =
             await _httpClient.GetFromJsonAsync<UserResponse>(
                 "https://dummyjson.com/users?limit=0"
+            )
+            ?? throw new InvalidOperationException(
+                "Could not retrieve users from the API."
             );
 
-        if (cartResponse == null || userResponse == null)
-        {
-            return new List<Order>();
-        }
 
         List<Order> orders = cartResponse.Carts.Select(cart =>
         {
@@ -60,5 +63,80 @@ public class OrderService
         }).ToList();
 
         return orders;
+    }
+
+    //Oppgave 3
+
+    public void CalculateOrderTotal(Order order)
+    {
+        decimal total = 0;
+
+        foreach (OrderLine orderLine in order.OrderLines)
+        {
+            total += orderLine.Quantity * orderLine.Price;
+        }
+
+        order.Total = total;
+    }
+
+    //Oppgave 4
+    public async Task<Order?> GetOrderAsync(int orderId)
+    {
+        List<Order> orders = await GetOrdersAsync();
+
+        return orders.FirstOrDefault(
+            order => order.OrderId == orderId
+        );
+    }
+
+    //Oppgave 5
+    public async Task<List<Order>> GetOrdersByCustomerIdAsync(int customerId)
+    {
+        List<Order> orders = await GetOrdersAsync();
+
+        return orders
+            .Where(order => order.CustomerId == customerId)
+            .ToList();
+    }
+
+    //oppgave 6
+    public async Task<List<Order>> GetOrdersByProductIdAsync(int productId)
+    {
+        List<Order> orders = await GetOrdersAsync();
+
+        return orders
+            .Where(order => order.OrderLines.Any(
+                orderLine => orderLine.ProductId == productId
+            ))
+            .ToList();
+    }
+
+    //oppgave 8
+
+    public async Task<List<ProductSales>> GetTopSellingProductsAsync()
+    {
+        List<Order> orders = await GetOrdersAsync();
+
+        return orders
+            .SelectMany(order => order.OrderLines)
+            .GroupBy(orderLine => new
+            {
+                orderLine.ProductId,
+                orderLine.ProductName
+            })
+            .Select(productGroup => new ProductSales
+            {
+                ProductId = productGroup.Key.ProductId,
+                ProductName = productGroup.Key.ProductName,
+                QuantitySold = productGroup.Sum(
+                    orderLine => orderLine.Quantity
+                ),
+                SalesRevenue = productGroup.Sum(
+                    orderLine => orderLine.Quantity * orderLine.Price
+                )
+            })
+            .OrderByDescending(product => product.QuantitySold)
+            .Take(5)
+            .ToList();
     }
 }

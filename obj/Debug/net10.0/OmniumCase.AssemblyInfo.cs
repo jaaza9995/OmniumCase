@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OmniumCase")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+68114c6ba547da62d986539e7f62fe86a1e7b549")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+12836b8371dfaad7adf286bf635746f7e0bb3d3a")]
 [assembly: System.Reflection.AssemblyProductAttribute("OmniumCase")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OmniumCase")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
