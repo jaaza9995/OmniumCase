@@ -1,7 +1,6 @@
 namespace OmniumCase.DTOs;
 
 public class CartResponse
-
 {
     public List<ApiCart> Carts { get; set; } = new();
 }
