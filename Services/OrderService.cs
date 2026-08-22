@@ -88,4 +88,16 @@ public class OrderServices
             };
         return orders;
     }
+
+    public void CalculateOrderTotal(Order order)
+    {
+        decimal total = 0;
+
+        foreach (OrderLine orderLine in order.OrderLines)
+        {
+            total += orderLine.Quantity * orderLine.Price;
+        }
+
+        order.Total = total;
+    }
 }
