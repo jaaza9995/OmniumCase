@@ -20,6 +20,4 @@ public class Order
     [Required]
     [MinLength(1, ErrorMessage = "The order must contain at least one item.")]
     public List<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
-
-
 }

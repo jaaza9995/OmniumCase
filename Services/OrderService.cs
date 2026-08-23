@@ -93,8 +93,9 @@ public class OrderService
 
         return orders.Where(order => order.CustomerId == customerId).ToList();
     }
-    //oppgave 6
 
+
+    //oppgave 6
     public async Task<List<Order>> GetOrdersByProductIdAsync(int productId)
     {
         List<Order> orders = await GetOrdersAsync();
