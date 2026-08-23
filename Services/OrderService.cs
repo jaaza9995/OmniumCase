@@ -2,11 +2,17 @@
 
 using OmniumCase.Models;
 using OmniumCase.DTOs;
+using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace OmniumCase.Service;
 
-public class OrderService
+public class OrderService<T> where T : Order, new()
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
     private readonly HttpClient _httpClient;
 
     public OrderService(HttpClient httpClient)
@@ -15,11 +21,12 @@ public class OrderService
     }
 
     //oppgave 2
-    public async Task<List<Order>> GetOrdersAsync()
+    public async Task<List<T>> GetOrdersAsync()
     {
+
         CartResponse cartResponse =
             await _httpClient.GetFromJsonAsync<CartResponse>(
-                "https://dummyjson.com/carts?limit=5"
+                "https://dummyjson.com/carts?limit=5", JsonOptions
             )
             ?? throw new InvalidOperationException(
                 "Could not retrieve carts from the API."
@@ -27,18 +34,17 @@ public class OrderService
 
         UserResponse userResponse =
             await _httpClient.GetFromJsonAsync<UserResponse>(
-                "https://dummyjson.com/users?limit=0"
+                "https://dummyjson.com/users?limit=0", JsonOptions
             )
             ?? throw new InvalidOperationException(
                 "Could not retrieve users from the API."
             );
 
-
-        List<Order> orders = cartResponse.Carts.Select(cart =>
+        List<T> orders = cartResponse.Carts.Select(cart =>
         {
             ApiUser? customer = userResponse.Users.FirstOrDefault(user => user.Id == cart.UserId);
 
-            return new Order
+            var order = new T
             {
                 OrderId = cart.Id,
                 CustomerId = cart.UserId,
@@ -58,14 +64,20 @@ public class OrderService
                     }
                 ).ToList()
             };
+
+            if (order is PosOrder posOrder)
+            {
+                posOrder.PosId = 100 + cart.Id;
+            }
+
+            return order;
         }).ToList();
 
         return orders;
     }
 
     //oppgave 3
-
-    public void CalculateOrderTotal(Order order)
+    public void CalculateOrderTotal(T order)
     {
         decimal total = 0;
 
@@ -78,27 +90,23 @@ public class OrderService
     }
 
     //oppgave 4
-
-    public async Task<Order?> GetOrderAsync(int orderId)
+    public async Task<T?> GetOrderAsync(int orderId)
     {
-        List<Order> orders = await GetOrdersAsync();
-
+        List<T> orders = await GetOrdersAsync();
         return orders.FirstOrDefault(order => order.OrderId == orderId);
     }
 
     //oppgave 5
-    public async Task<List<Order>> GetOrdersByCustomerIdAsync(int customerId)
+    public async Task<List<T>> GetOrdersByCustomerIdAsync(int customerId)
     {
-        List<Order> orders = await GetOrdersAsync();
-
+        List<T> orders = await GetOrdersAsync();
         return orders.Where(order => order.CustomerId == customerId).ToList();
     }
 
-
     //oppgave 6
-    public async Task<List<Order>> GetOrdersByProductIdAsync(int productId)
+    public async Task<List<T>> GetOrdersByProductIdAsync(int productId)
     {
-        List<Order> orders = await GetOrdersAsync();
+        List<T> orders = await GetOrdersAsync();
 
         return orders
             .Where(order => order.OrderLines.Any(
@@ -107,11 +115,10 @@ public class OrderService
             .ToList();
     }
 
-
     //oppgave 8
     public async Task<List<ProductSales>> GetTopSellingProductsAsync()
     {
-        List<Order> orders = await GetOrdersAsync();
+        List<T> orders = await GetOrdersAsync();
 
         return orders
             .SelectMany(order => order.OrderLines)
