@@ -9,16 +9,16 @@ namespace OmniumCase.Service;
 
 public class OrderService<T> where T : Order, new()
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
     private readonly HttpClient _httpClient;
 
     public OrderService(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
 
     //oppgave 2
     public async Task<List<T>> GetOrdersAsync()
