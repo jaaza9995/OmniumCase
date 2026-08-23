@@ -4,7 +4,7 @@ namespace OmniumCase.Models;
 
 public class Order
 {
-    [Range(0, int.MaxValue)]
+    [Range(1, int.MaxValue)]
     public int OrderId { get; set; }
 
     [Range(1, int.MaxValue, ErrorMessage = "CustomerId must be greater than 0.")]

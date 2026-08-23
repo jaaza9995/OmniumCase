@@ -2,7 +2,6 @@
 
 using OmniumCase.Models;
 using OmniumCase.DTOs;
-using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace OmniumCase.Service;
@@ -109,10 +108,7 @@ public class OrderService<T> where T : Order, new()
         List<T> orders = await GetOrdersAsync();
 
         return orders
-            .Where(order => order.OrderLines.Any(
-                orderLine => orderLine.ProductId == productId
-            ))
-            .ToList();
+            .Where(order => order.OrderLines.Any(orderLine => orderLine.ProductId == productId)).ToList();
     }
 
     //oppgave 8

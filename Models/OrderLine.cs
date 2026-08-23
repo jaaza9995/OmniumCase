@@ -4,7 +4,7 @@ namespace OmniumCase.Models;
 
 public class OrderLine
 {
-    [Range(0, int.MaxValue)]
+    [Range(1, int.MaxValue)]
     public int OrderLineId { get; set; }
 
     [Range(1, int.MaxValue, ErrorMessage = "The number must be at least 1.")]
